@@ -11,6 +11,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+const categoryRoutes = require("./routes/category.routes");
+app.use("/categories", categoryRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
