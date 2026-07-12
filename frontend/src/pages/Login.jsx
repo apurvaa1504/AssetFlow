@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
-const BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 export default function Login() {
   const { login } = useAuth();
