@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function ProtectedRoute({ children, allowedRoles }) {
-  const { token, loading, user } = useAuth();
+  const { token, user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -17,8 +17,9 @@ export default function ProtectedRoute({ children, allowedRoles }) {
   }
 
   if (allowedRoles && user) {
-    const userRole = user.role ? user.role.toUpperCase() : '';
-    if (!allowedRoles.includes(userRole)) {
+    const userRole = user.role ? user.role.toLowerCase() : '';
+    const normalizedAllowed = allowedRoles.map((r) => r.toLowerCase());
+    if (!normalizedAllowed.includes(userRole)) {
       return <Navigate to="/dashboard" replace />;
     }
   }

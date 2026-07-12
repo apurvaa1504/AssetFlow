@@ -1,42 +1,19 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
-const ROLE_LINKS = {
-  ADMIN: [
-    { to: '/dashboard', label: 'Dashboard' },
-    { to: '/organization', label: 'Organization Setup' },
-    { to: '/employees', label: 'Employee Directory' },
-    { to: '/assets', label: 'Asset Directory' },
-    { to: '/booking', label: 'Booking' },
-    { to: '/maintenance', label: 'Maintenance' },
-    { to: '/audit', label: 'Audit' },
-    { to: '/reports', label: 'Reports' },
-    { to: '/notifications', label: 'Notifications' },
-  ],
-  ASSET_MANAGER: [
-    { to: '/dashboard', label: 'Dashboard' },
-    { to: '/assets', label: 'Asset Directory' },
-    { to: '/booking', label: 'Booking' },
-    { to: '/maintenance', label: 'Maintenance' },
-    { to: '/audit', label: 'Audit' },
-    { to: '/reports', label: 'Reports' },
-    { to: '/notifications', label: 'Notifications' },
-  ],
-  DEPARTMENT_HEAD: [
-    { to: '/dashboard', label: 'Dashboard' },
-    { to: '/department-assets', label: 'Department Assets' },
-    { to: '/booking', label: 'Booking' },
-    { to: '/reports', label: 'Reports' },
-    { to: '/notifications', label: 'Notifications' },
-  ],
-  EMPLOYEE: [
-    { to: '/dashboard', label: 'Dashboard' },
-    { to: '/my-assets', label: 'My Assets' },
-    { to: '/booking', label: 'Booking' },
-    { to: '/maintenance', label: 'Maintenance' },
-    { to: '/notifications', label: 'Notifications' },
-  ],
-};
+const LINKS = [
+  { to: '/dashboard', label: 'Dashboard', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
+  { to: '/organization', label: 'Organization Setup', roles: ['admin'] },
+  { to: '/employees', label: 'Employee Directory', roles: ['admin'] },
+  { to: '/assets', label: 'Asset Directory', roles: ['admin', 'asset_manager'] },
+  { to: '/my-assets', label: 'My Assets', roles: ['employee'] },
+  { to: '/department-assets', label: 'Department Assets', roles: ['department_head'] },
+  { to: '/booking', label: 'Booking', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
+  { to: '/maintenance', label: 'Maintenance', roles: ['admin', 'asset_manager', 'employee'] },
+  { to: '/audit', label: 'Audit', roles: ['admin', 'asset_manager'] },
+  { to: '/reports', label: 'Reports', roles: ['admin', 'asset_manager', 'department_head'] },
+  { to: '/notifications', label: 'Notifications', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
+];
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -47,7 +24,10 @@ export default function Navbar() {
     navigate('/login');
   }
 
-  const links = user && user.role ? ROLE_LINKS[user.role.toUpperCase()] || [] : [];
+  const userRole = user?.role ? user.role.toLowerCase() : '';
+  const visibleLinks = LINKS.filter((link) =>
+    link.roles.map((r) => r.toLowerCase()).includes(userRole)
+  );
 
   return (
     <aside className="flex h-screen w-56 flex-col border-r border-line bg-surface">
@@ -58,7 +38,7 @@ export default function Navbar() {
         <span className="font-display text-base font-semibold text-ink">AssetFlow</span>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {links.map((link) => (
+        {visibleLinks.map((link) => (
           <NavLink
             key={link.to}
             to={link.to}
@@ -88,4 +68,4 @@ export default function Navbar() {
       </div>
     </aside>
   );
-}
+}
