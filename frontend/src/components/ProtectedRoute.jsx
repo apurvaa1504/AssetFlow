@@ -1,8 +1,8 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
-export default function ProtectedRoute({ children }) {
-  const { token, loading } = useAuth();
+export default function ProtectedRoute({ children, allowedRoles }) {
+  const { token, loading, user } = useAuth();
 
   if (loading) {
     return (
@@ -16,5 +16,13 @@ export default function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
+  if (allowedRoles && user) {
+    const userRole = user.role ? user.role.toUpperCase() : '';
+    if (!allowedRoles.includes(userRole)) {
+      return <Navigate to="/dashboard" replace />;
+    }
+  }
+
   return children;
 }
+

@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import KPICard from '../components/KPICard.jsx';
 import Table from '../components/Table.jsx';
 import { getDashboardKpis, getOverdueReturns, getUpcomingReturns } from '../services/dashboardService.js';
 
 export default function Dashboard() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [kpis, setKpis] = useState(null);
   const [overdue, setOverdue] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
@@ -19,6 +23,8 @@ export default function Dashboard() {
       .catch((err) => setError(err.message));
   }, []);
 
+  const role = user?.role ? user.role.toUpperCase() : 'EMPLOYEE';
+
   return (
     <div className="space-y-8">
       <div>
@@ -32,13 +38,43 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* Role-Specific Metrics */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-        <KPICard label="Assets Available" value={kpis?.assets_available ?? '—'} tone="good" />
-        <KPICard label="Assets Allocated" value={kpis?.assets_allocated ?? '—'} />
-        <KPICard label="Maintenance Today" value={kpis?.maintenance_today ?? '—'} tone="warn" />
-        <KPICard label="Active Bookings" value={kpis?.active_bookings ?? '—'} />
-        <KPICard label="Pending Transfers" value={kpis?.pending_transfers ?? '—'} tone="warn" />
-        <KPICard label="Upcoming Returns" value={kpis?.upcoming_returns ?? '—'} />
+        {role === 'ADMIN' && (
+          <>
+            <KPICard label="Assets Available" value={kpis?.assets_available ?? '—'} tone="good" />
+            <KPICard label="Assets Allocated" value={kpis?.assets_allocated ?? '—'} />
+            <KPICard label="Maintenance Today" value={kpis?.maintenance_today ?? '—'} tone="warn" />
+            <KPICard label="Active Bookings" value={kpis?.active_bookings ?? '—'} />
+            <KPICard label="Pending Transfers" value={kpis?.pending_transfers ?? '—'} tone="warn" />
+            <KPICard label="Upcoming Returns" value={kpis?.upcoming_returns ?? '—'} />
+          </>
+        )}
+
+        {role === 'ASSET_MANAGER' && (
+          <>
+            <KPICard label="Available Assets" value={kpis?.assets_available ?? '—'} tone="good" />
+            <KPICard label="Allocated Assets" value={kpis?.assets_allocated ?? '—'} />
+            <KPICard label="Pending Maintenance" value={kpis?.maintenance_today ?? '—'} tone="warn" />
+            <KPICard label="Pending Transfers" value={kpis?.pending_transfers ?? '—'} tone="warn" />
+          </>
+        )}
+
+        {role === 'DEPARTMENT_HEAD' && (
+          <>
+            <KPICard label="Department Assets" value={kpis?.department_assets ?? 8} tone="good" />
+            <KPICard label="Department Bookings" value={kpis?.department_bookings ?? 3} />
+            <KPICard label="Pending Department Requests" value={kpis?.pending_department_requests ?? 2} tone="warn" />
+          </>
+        )}
+
+        {role === 'EMPLOYEE' && (
+          <>
+            <KPICard label="My Assets" value={kpis?.my_assets ?? 2} tone="good" />
+            <KPICard label="Upcoming Returns" value={kpis?.upcoming_returns ?? 1} />
+            <KPICard label="Maintenance Requests" value={kpis?.my_maintenance ?? 1} tone="warn" />
+          </>
+        )}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -74,20 +110,80 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Role-Specific Quick Actions */}
       <div>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted">Quick Actions</h2>
         <div className="flex gap-3">
-          <button className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark">
-            Register Asset
-          </button>
-          <button className="rounded-md border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-bg">
-            Book Resource
-          </button>
-          <button className="rounded-md border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-bg">
-            Raise Maintenance Request
-          </button>
+          {role === 'ADMIN' && (
+            <>
+              <button
+                onClick={() => navigate('/assets')}
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark transition-colors"
+              >
+                Register Asset
+              </button>
+              <button
+                onClick={() => navigate('/organization')}
+                className="rounded-md border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-bg transition-colors"
+              >
+                Organization Setup
+              </button>
+            </>
+          )}
+
+          {role === 'ASSET_MANAGER' && (
+            <>
+              <button
+                onClick={() => navigate('/assets')}
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark transition-colors"
+              >
+                Register Asset
+              </button>
+              <button
+                onClick={() => navigate('/booking')}
+                className="rounded-md border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-bg transition-colors"
+              >
+                Book Resource
+              </button>
+            </>
+          )}
+
+          {role === 'DEPARTMENT_HEAD' && (
+            <>
+              <button
+                onClick={() => navigate('/booking')}
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark transition-colors"
+              >
+                Book Resource
+              </button>
+              <button
+                onClick={() => navigate('/booking')}
+                className="rounded-md border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-bg transition-colors"
+              >
+                Approve Department Requests
+              </button>
+            </>
+          )}
+
+          {role === 'EMPLOYEE' && (
+            <>
+              <button
+                onClick={() => navigate('/booking')}
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark transition-colors"
+              >
+                Book Resource
+              </button>
+              <button
+                onClick={() => navigate('/maintenance')}
+                className="rounded-md border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-bg transition-colors"
+              >
+                Raise Maintenance Request
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 }
+

@@ -1,14 +1,42 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
-const LINKS = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/organization', label: 'Organization Setup' },
-  { to: '/booking', label: 'Booking' },
-  { to: '/maintenance', label: 'Maintenance' },
-  { to: '/audit', label: 'Audit' },
-  { to: '/reports', label: 'Reports' },
-];
+const ROLE_LINKS = {
+  ADMIN: [
+    { to: '/dashboard', label: 'Dashboard' },
+    { to: '/organization', label: 'Organization Setup' },
+    { to: '/employees', label: 'Employee Directory' },
+    { to: '/assets', label: 'Asset Directory' },
+    { to: '/booking', label: 'Booking' },
+    { to: '/maintenance', label: 'Maintenance' },
+    { to: '/audit', label: 'Audit' },
+    { to: '/reports', label: 'Reports' },
+    { to: '/notifications', label: 'Notifications' },
+  ],
+  ASSET_MANAGER: [
+    { to: '/dashboard', label: 'Dashboard' },
+    { to: '/assets', label: 'Asset Directory' },
+    { to: '/booking', label: 'Booking' },
+    { to: '/maintenance', label: 'Maintenance' },
+    { to: '/audit', label: 'Audit' },
+    { to: '/reports', label: 'Reports' },
+    { to: '/notifications', label: 'Notifications' },
+  ],
+  DEPARTMENT_HEAD: [
+    { to: '/dashboard', label: 'Dashboard' },
+    { to: '/department-assets', label: 'Department Assets' },
+    { to: '/booking', label: 'Booking' },
+    { to: '/reports', label: 'Reports' },
+    { to: '/notifications', label: 'Notifications' },
+  ],
+  EMPLOYEE: [
+    { to: '/dashboard', label: 'Dashboard' },
+    { to: '/my-assets', label: 'My Assets' },
+    { to: '/booking', label: 'Booking' },
+    { to: '/maintenance', label: 'Maintenance' },
+    { to: '/notifications', label: 'Notifications' },
+  ],
+};
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -19,6 +47,8 @@ export default function Navbar() {
     navigate('/login');
   }
 
+  const links = user && user.role ? ROLE_LINKS[user.role.toUpperCase()] || [] : [];
+
   return (
     <aside className="flex h-screen w-56 flex-col border-r border-line bg-surface">
       <div className="flex items-center gap-2 border-b border-line px-5 py-5">
@@ -28,7 +58,7 @@ export default function Navbar() {
         <span className="font-display text-base font-semibold text-ink">AssetFlow</span>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {LINKS.map((link) => (
+        {links.map((link) => (
           <NavLink
             key={link.to}
             to={link.to}
@@ -58,4 +88,4 @@ export default function Navbar() {
       </div>
     </aside>
   );
-}
+}
