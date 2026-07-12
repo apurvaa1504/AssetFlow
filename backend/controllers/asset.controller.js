@@ -16,7 +16,7 @@ async function createAsset(req, res) {
 // Get All
 async function getAssets(req, res) {
     try {
-        const assets = await assetService.getAssets();
+        const assets = await assetService.getAssets(req.query);
 
         res.json(assets);
     } catch (err) {
@@ -61,6 +61,22 @@ async function updateAsset(req, res) {
     }
 }
 
+async function updateAssetStatus(req, res) {
+    try {
+        const asset = await assetService.updateAssetStatus(
+            req.params.id,
+            req.body.status
+        );
+
+        res.json(asset);
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message,
+        });
+    }
+}
+
 // Delete
 async function deleteAsset(req, res) {
     try {
@@ -82,4 +98,5 @@ module.exports = {
     getAssetById,
     updateAsset,
     deleteAsset,
+    updateAssetStatus,
 };

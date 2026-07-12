@@ -5,5 +5,51 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/categories': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/departments': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/dashboard': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/bookings': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/maintenance': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/audit-cycles': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/audit-items': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/reports': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/users': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/assets': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
   },
 });
