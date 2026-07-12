@@ -3,10 +3,7 @@ import Table from '../components/Table.jsx';
 import AssetChip from '../components/AssetChip.jsx';
 
 export default function MyAssets() {
-  const [myAssets] = useState([
-    { id: 1, tag: 'AST-001', name: 'MacBook Pro 16"', category: 'Laptops', allocatedDate: '2026-01-15', returnDue: '2027-01-15' },
-    { id: 2, tag: 'AST-004', name: 'iPhone 15 Pro', category: 'Phones', allocatedDate: '2026-03-22', returnDue: '2026-12-31' },
-  ]);
+  const [myAssets] = useState([]);
 
   return (
     <div className="space-y-8">

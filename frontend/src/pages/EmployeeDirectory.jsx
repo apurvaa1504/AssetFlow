@@ -3,13 +3,7 @@ import Table from '../components/Table.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 
 export default function EmployeeDirectory() {
-  const [employees] = useState([
-    { id: 1, name: 'Apurva Sharma', email: 'apurva@assetflow.com', role: 'ADMIN', department: 'Operations', status: 'active' },
-    { id: 2, name: 'John Doe', email: 'john@assetflow.com', role: 'ASSET_MANAGER', department: 'IT Support', status: 'active' },
-    { id: 3, name: 'Sarah Jenkins', email: 'sarah@assetflow.com', role: 'DEPARTMENT_HEAD', department: 'Engineering', status: 'active' },
-    { id: 4, name: 'Alice Smith', email: 'alice@assetflow.com', role: 'EMPLOYEE', department: 'Marketing', status: 'active' },
-    { id: 5, name: 'Bob Johnson', email: 'bob@assetflow.com', role: 'EMPLOYEE', department: 'Engineering', status: 'active' },
-  ]);
+  const [employees] = useState([]);
 
   return (
     <div className="space-y-8">

@@ -39,9 +39,9 @@ export default function Maintenance() {
   const [resolveRequest, setResolveRequest] = useState(null);
   const [resNotes, setResNotes] = useState('');
 
-  const role = user?.role ? user.role.toUpperCase() : 'EMPLOYEE';
-  const canRaise = role === 'EMPLOYEE' || role === 'ADMIN';
-  const canManage = role === 'ASSET_MANAGER' || role === 'ADMIN';
+  const role = user?.role ? user.role.toLowerCase() : 'employee';
+  const canRaise = role === 'employee' || role === 'admin';
+  const canManage = role === 'asset_manager' || role === 'admin';
 
   useEffect(() => {
     fetchRequests();

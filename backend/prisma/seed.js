@@ -8,17 +8,12 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const email = 'admin@assetflow.com';
-  const existing = await prisma.user.findUnique({ where: { email } });
-
-  if (existing) {
-    console.log('Admin already exists:', email);
-    return;
-  }
-
   const passwordHash = await bcrypt.hash('Admin@123', 10);
 
-  const admin = await prisma.user.create({
-    data: {
+  const admin = await prisma.user.upsert({
+    where: { email },
+    update: { passwordHash, role: 'admin', name: 'System Admin' },
+    create: {
       name: 'System Admin',
       email,
       passwordHash,
@@ -26,7 +21,7 @@ async function main() {
     },
   });
 
-  console.log('Admin created:', admin.email);
+  console.log('Admin upserted:', admin.email, '| role:', admin.role);
 }
 
 main()

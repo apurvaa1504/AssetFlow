@@ -23,7 +23,7 @@ export default function Dashboard() {
       .catch((err) => setError(err.message));
   }, []);
 
-  const role = user?.role ? user.role.toUpperCase() : 'EMPLOYEE';
+  const role = user?.role ? user.role.toLowerCase() : 'employee';
 
   return (
     <div className="space-y-8">
@@ -40,7 +40,7 @@ export default function Dashboard() {
 
       {/* Role-Specific Metrics */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-        {role === 'ADMIN' && (
+        {role === 'admin' && (
           <>
             <KPICard label="Assets Available" value={kpis?.assets_available ?? '—'} tone="good" />
             <KPICard label="Assets Allocated" value={kpis?.assets_allocated ?? '—'} />
@@ -51,7 +51,7 @@ export default function Dashboard() {
           </>
         )}
 
-        {role === 'ASSET_MANAGER' && (
+        {role === 'asset_manager' && (
           <>
             <KPICard label="Available Assets" value={kpis?.assets_available ?? '—'} tone="good" />
             <KPICard label="Allocated Assets" value={kpis?.assets_allocated ?? '—'} />
@@ -60,7 +60,7 @@ export default function Dashboard() {
           </>
         )}
 
-        {role === 'DEPARTMENT_HEAD' && (
+        {role === 'department_head' && (
           <>
             <KPICard label="Department Assets" value={kpis?.department_assets ?? 8} tone="good" />
             <KPICard label="Department Bookings" value={kpis?.department_bookings ?? 3} />
@@ -68,7 +68,7 @@ export default function Dashboard() {
           </>
         )}
 
-        {role === 'EMPLOYEE' && (
+        {role === 'employee' && (
           <>
             <KPICard label="My Assets" value={kpis?.my_assets ?? 2} tone="good" />
             <KPICard label="Upcoming Returns" value={kpis?.upcoming_returns ?? 1} />
@@ -114,7 +114,7 @@ export default function Dashboard() {
       <div>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted">Quick Actions</h2>
         <div className="flex gap-3">
-          {role === 'ADMIN' && (
+          {role === 'admin' && (
             <>
               <button
                 onClick={() => navigate('/assets')}
@@ -131,7 +131,7 @@ export default function Dashboard() {
             </>
           )}
 
-          {role === 'ASSET_MANAGER' && (
+          {role === 'asset_manager' && (
             <>
               <button
                 onClick={() => navigate('/assets')}
@@ -148,7 +148,7 @@ export default function Dashboard() {
             </>
           )}
 
-          {role === 'DEPARTMENT_HEAD' && (
+          {role === 'department_head' && (
             <>
               <button
                 onClick={() => navigate('/booking')}
@@ -165,7 +165,7 @@ export default function Dashboard() {
             </>
           )}
 
-          {role === 'EMPLOYEE' && (
+          {role === 'employee' && (
             <>
               <button
                 onClick={() => navigate('/booking')}

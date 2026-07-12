@@ -4,11 +4,7 @@ import AssetChip from '../components/AssetChip.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 
 export default function DepartmentAssets() {
-  const [deptAssets] = useState([
-    { id: 1, tag: 'AST-001', name: 'MacBook Pro 16"', assignedTo: 'Alice Smith', category: 'Laptops', status: 'allocated' },
-    { id: 2, tag: 'AST-003', name: 'iPad Pro 11"', assignedTo: 'Bob Johnson', category: 'Tablets', status: 'maintenance' },
-    { id: 3, tag: 'AST-005', name: 'ThinkPad X1 Carbon', assignedTo: 'Unassigned', category: 'Laptops', status: 'available' },
-  ]);
+  const [deptAssets] = useState([]);
 
   return (
     <div className="space-y-8">
