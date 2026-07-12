@@ -2,19 +2,21 @@ import { useEffect, useState } from 'react';
 import KPICard from '../components/KPICard.jsx';
 import Table from '../components/Table.jsx';
 import { getDashboardKpis, getOverdueReturns, getUpcomingReturns } from '../services/dashboardService.js';
-import { dummyKpis, dummyOverdueReturns, dummyUpcomingReturns } from '../data/dummyData.js';
 
 export default function Dashboard() {
-  // Service calls fall back to dummy data until the backend is live —
-  // see src/services/dashboardService.js for the swap point.
-  const [kpis, setKpis] = useState(dummyKpis);
-  const [overdue, setOverdue] = useState(dummyOverdueReturns);
-  const [upcoming, setUpcoming] = useState(dummyUpcomingReturns);
+  const [kpis, setKpis] = useState(null);
+  const [overdue, setOverdue] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    getDashboardKpis().then((data) => data && setKpis(data));
-    getOverdueReturns().then((data) => data && setOverdue(data));
-    getUpcomingReturns().then((data) => data && setUpcoming(data));
+    Promise.all([getDashboardKpis(), getOverdueReturns(), getUpcomingReturns()])
+      .then(([kpiData, overdueData, upcomingData]) => {
+        setKpis(kpiData);
+        setOverdue(overdueData);
+        setUpcoming(upcomingData);
+      })
+      .catch((err) => setError(err.message));
   }, []);
 
   return (
@@ -24,13 +26,19 @@ export default function Dashboard() {
         <p className="mt-1 text-sm text-muted">Real-time snapshot across every module.</p>
       </div>
 
+      {error && (
+        <div className="rounded-md border border-danger/30 bg-danger-light px-3 py-2 text-sm text-danger">
+          {error}
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-        <KPICard label="Assets Available" value={kpis.assets_available} tone="good" />
-        <KPICard label="Assets Allocated" value={kpis.assets_allocated} />
-        <KPICard label="Maintenance Today" value={kpis.maintenance_today} tone="warn" />
-        <KPICard label="Active Bookings" value={kpis.active_bookings} />
-        <KPICard label="Pending Transfers" value={kpis.pending_transfers} tone="warn" />
-        <KPICard label="Upcoming Returns" value={kpis.upcoming_returns} />
+        <KPICard label="Assets Available" value={kpis?.assets_available ?? '—'} tone="good" />
+        <KPICard label="Assets Allocated" value={kpis?.assets_allocated ?? '—'} />
+        <KPICard label="Maintenance Today" value={kpis?.maintenance_today ?? '—'} tone="warn" />
+        <KPICard label="Active Bookings" value={kpis?.active_bookings ?? '—'} />
+        <KPICard label="Pending Transfers" value={kpis?.pending_transfers ?? '—'} tone="warn" />
+        <KPICard label="Upcoming Returns" value={kpis?.upcoming_returns ?? '—'} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
