@@ -4,10 +4,15 @@ import { useAuth } from '../context/AuthContext.jsx';
 const LINKS = [
   { to: '/dashboard', label: 'Dashboard', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
   { to: '/organization', label: 'Organization Setup', roles: ['admin'] },
+  { to: '/employees', label: 'Employee Directory', roles: ['admin'] },
+  { to: '/assets', label: 'Asset Directory', roles: ['admin', 'asset_manager'] },
+  { to: '/my-assets', label: 'My Assets', roles: ['employee'] },
+  { to: '/department-assets', label: 'Department Assets', roles: ['department_head'] },
   { to: '/booking', label: 'Booking', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
-  { to: '/maintenance', label: 'Maintenance', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
+  { to: '/maintenance', label: 'Maintenance', roles: ['admin', 'asset_manager', 'employee'] },
   { to: '/audit', label: 'Audit', roles: ['admin', 'asset_manager'] },
   { to: '/reports', label: 'Reports', roles: ['admin', 'asset_manager', 'department_head'] },
+  { to: '/notifications', label: 'Notifications', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
 ];
 
 export default function Navbar() {
@@ -19,7 +24,10 @@ export default function Navbar() {
     navigate('/login');
   }
 
-  const visibleLinks = LINKS.filter((link) => link.roles.includes(user?.role));
+  const userRole = user?.role ? user.role.toLowerCase() : '';
+  const visibleLinks = LINKS.filter((link) =>
+    link.roles.map((r) => r.toLowerCase()).includes(userRole)
+  );
 
   return (
     <aside className="flex h-screen w-56 flex-col border-r border-line bg-surface">
