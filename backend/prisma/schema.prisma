@@ -18,11 +18,66 @@ enum RecordStatus {
   inactive
 }
 
+enum AssetStatus {
+  available
+  allocated
+  reserved
+  under_maintenance
+  lost
+  retired
+  disposed
+}
+
+enum AllocationStatus {
+  active
+  returned
+  transferred
+}
+
+enum TransferStatus {
+  requested
+  approved
+  rejected
+  completed
+}
+
+enum BookingStatus {
+  upcoming
+  ongoing
+  completed
+  cancelled
+}
+
+enum MaintenanceStatus {
+  pending
+  approved
+  rejected
+  technician_assigned
+  in_progress
+  resolved
+}
+
+enum AuditCycleStatus {
+  planned
+  active
+  closed
+}
+
+enum VerificationStatus {
+  pending
+  verified
+  missing
+  damaged
+}
+
 model Department {
   id        String       @id @default(uuid())
   name      String       @unique
   status    RecordStatus @default(active)
   createdAt DateTime     @default(now()) @map("created_at")
+
+  allocations Allocation[]
+  auditCycles AuditCycle[]
 
   @@map("departments")
 }
@@ -37,4 +92,141 @@ model User {
   createdAt    DateTime     @default(now()) @map("created_at")
 
   @@map("users")
+}
+
+model AssetCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  assets      Asset[]
+
+  @@map("asset_categories")
+}
+
+model Asset {
+  id              String        @id @default(uuid())
+  assetTag        String        @unique @map("asset_tag")
+  name            String
+  categoryId      String        @map("category_id")
+  category        AssetCategory @relation(fields: [categoryId], references: [id])
+  status          AssetStatus   @default(available)
+  location        String?
+  createdAt       DateTime      @default(now()) @map("created_at")
+
+  allocations         Allocation[]
+  transferRequests    TransferRequest[]
+  bookings            Booking[]
+  maintenanceRequests MaintenanceRequest[]
+  auditItems          AuditItem[]
+
+  @@map("assets")
+}
+
+model Allocation {
+  id                 String           @id @default(uuid())
+  assetId            String           @map("asset_id")
+  asset              Asset            @relation(fields: [assetId], references: [id])
+  employeeId         String?          @map("employee_id")
+  departmentId       String?          @map("department_id")
+  department         Department?      @relation(fields: [departmentId], references: [id])
+  allocatedDate      DateTime         @default(now()) @map("allocated_date")
+  expectedReturnDate DateTime?        @map("expected_return_date")
+  actualReturnDate   DateTime?        @map("actual_return_date")
+  status             AllocationStatus @default(active)
+  createdAt          DateTime         @default(now()) @map("created_at")
+
+  @@map("allocations")
+}
+
+model TransferRequest {
+  id           String         @id @default(uuid())
+  assetId      String         @map("asset_id")
+  asset        Asset          @relation(fields: [assetId], references: [id])
+  requestedBy  String         @map("requested_by")
+  toEmployeeId String?        @map("to_employee_id")
+  reason       String?
+  status       TransferStatus @default(requested)
+  createdAt    DateTime       @default(now()) @map("created_at")
+
+  @@map("transfer_requests")
+}
+
+model Booking {
+  id           String        @id @default(uuid())
+  assetId      String        @map("asset_id")
+  asset        Asset         @relation(fields: [assetId], references: [id])
+  bookedBy     String        @map("booked_by")
+  startTime    DateTime      @map("start_time")
+  endTime      DateTime      @map("end_time")
+  purpose      String?
+  status       BookingStatus @default(upcoming)
+  createdAt    DateTime      @default(now()) @map("created_at")
+
+  @@map("bookings")
+}
+
+model MaintenanceRequest {
+  id                  String            @id @default(uuid())
+  assetId             String            @map("asset_id")
+  asset               Asset             @relation(fields: [assetId], references: [id])
+  raisedBy            String            @map("raised_by")
+  issueDescription    String            @map("issue_description")
+  status              MaintenanceStatus @default(pending)
+  assignedTechnician  String?           @map("assigned_technician")
+  resolutionNotes     String?           @map("resolution_notes")
+  createdAt           DateTime          @default(now()) @map("created_at")
+
+  @@map("maintenance_requests")
+}
+
+model AuditCycle {
+  id           String           @id @default(uuid())
+  name         String
+  departmentId String?          @map("department_id")
+  department   Department?      @relation(fields: [departmentId], references: [id])
+  startDate    DateTime         @map("start_date")
+  endDate      DateTime         @map("end_date")
+  status       AuditCycleStatus @default(planned)
+  createdAt    DateTime         @default(now()) @map("created_at")
+
+  items        AuditItem[]
+
+  @@map("audit_cycles")
+}
+
+model AuditItem {
+  id                 String             @id @default(uuid())
+  auditCycleId       String             @map("audit_cycle_id")
+  auditCycle         AuditCycle         @relation(fields: [auditCycleId], references: [id])
+  assetId            String             @map("asset_id")
+  asset              Asset              @relation(fields: [assetId], references: [id])
+  verificationStatus VerificationStatus @default(pending) @map("verification_status")
+  notes              String?
+
+  @@map("audit_items")
+}
+
+enum NotificationType {
+  asset_assigned
+  maintenance_approved
+  maintenance_rejected
+  booking_confirmed
+  booking_cancelled
+  transfer_requested
+  transfer_approved
+  overdue_return
+  audit_discrepancy_flagged
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  type      NotificationType
+  message   String
+  isRead    Boolean          @default(false) @map("is_read")
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  @@map("notifications")
 }
