@@ -12,6 +12,7 @@ const maintenanceRoutes = require('./routes/maintenance.routes');
 const auditRoutes = require('./routes/audit.routes');
 const auditItemRoutes = require('./routes/audit-items.routes');
 const reportsRoutes = require('./routes/reports.routes');
+const userRoutes = require('./routes/user.routes');
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -31,6 +32,7 @@ app.use('/maintenance', maintenanceRoutes);
 app.use('/audit-cycles', auditRoutes);
 app.use('/audit-items', auditItemRoutes);
 app.use('/reports', reportsRoutes);
+app.use('/users', userRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
