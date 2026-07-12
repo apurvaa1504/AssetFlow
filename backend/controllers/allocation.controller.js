@@ -1,3 +1,4 @@
+const allocationService = require("../services/allocation.service");
 const { PrismaClient } = require('@prisma/client');
 const { PrismaPg } = require('@prisma/adapter-pg');
 
@@ -76,8 +77,47 @@ async function getDepartmentAllocations(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
+async function createAllocation(req, res) {
+    try {
+        const allocation = await allocationService.createAllocation(req.body);
+
+        res.status(201).json(allocation);
+
+    } catch (err) {
+
+        if (err.message === "Asset already allocated") {
+            return res.status(409).json({
+                message: err.message,
+            });
+        }
+
+        if (err.message === "Asset not found") {
+            return res.status(404).json({
+                message: err.message,
+            });
+        }
+
+        res.status(500).json({
+            error: err.message,
+        });
+    }
+}
+
+async function returnAsset(req, res) {
+    try {
+        const allocation = await allocationService.returnAsset(req.params.id);
+
+        res.json(allocation);
+    } catch (err) {
+        res.status(500).json({
+            error: err.message,
+        });
+    }
+}
 
 module.exports = {
   getMyAllocations,
   getDepartmentAllocations,
+  createAllocation,
+  returnAsset,
 };
