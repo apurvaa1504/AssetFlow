@@ -18,6 +18,9 @@ app.use("/categories", categoryRoutes);
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/api/auth', authRoutes);
+const assetRoutes = require("./routes/asset.routes");
+
+app.use("/assets", assetRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
