@@ -2,12 +2,12 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const LINKS = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/organization', label: 'Organization Setup' },
-  { to: '/booking', label: 'Booking' },
-  { to: '/maintenance', label: 'Maintenance' },
-  { to: '/audit', label: 'Audit' },
-  { to: '/reports', label: 'Reports' },
+  { to: '/dashboard', label: 'Dashboard', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
+  { to: '/organization', label: 'Organization Setup', roles: ['admin'] },
+  { to: '/booking', label: 'Booking', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
+  { to: '/maintenance', label: 'Maintenance', roles: ['admin', 'asset_manager', 'department_head', 'employee'] },
+  { to: '/audit', label: 'Audit', roles: ['admin', 'asset_manager'] },
+  { to: '/reports', label: 'Reports', roles: ['admin', 'asset_manager', 'department_head'] },
 ];
 
 export default function Navbar() {
@@ -19,6 +19,8 @@ export default function Navbar() {
     navigate('/login');
   }
 
+  const visibleLinks = LINKS.filter((link) => link.roles.includes(user?.role));
+
   return (
     <aside className="flex h-screen w-56 flex-col border-r border-line bg-surface">
       <div className="flex items-center gap-2 border-b border-line px-5 py-5">
@@ -28,7 +30,7 @@ export default function Navbar() {
         <span className="font-display text-base font-semibold text-ink">AssetFlow</span>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {LINKS.map((link) => (
+        {visibleLinks.map((link) => (
           <NavLink
             key={link.to}
             to={link.to}

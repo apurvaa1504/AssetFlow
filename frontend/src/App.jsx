@@ -35,7 +35,7 @@ function Layout() {
           <Route
             path="/organization"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['admin']}>
                 <OrganizationSetup />
               </ProtectedRoute>
             }
@@ -59,7 +59,7 @@ function Layout() {
           <Route
             path="/audit"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['admin', 'asset_manager']}>
                 <Audit />
               </ProtectedRoute>
             }
@@ -67,7 +67,7 @@ function Layout() {
           <Route
             path="/reports"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['admin', 'asset_manager', 'department_head']}>
                 <Reports />
               </ProtectedRoute>
             }
