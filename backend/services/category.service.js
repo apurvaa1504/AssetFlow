@@ -22,8 +22,34 @@ async function getAllCategories() {
         },
     });
 }
+async function getCategoryById(id) {
+    return await prisma.assetCategory.findUnique({
+        where: {
+            id,
+        },
+    });
+}
 
+async function updateCategory(id, data) {
+    return await prisma.assetCategory.update({
+        where: {
+            id,
+        },
+        data,
+    });
+}
+
+async function deleteCategory(id) {
+    return await prisma.assetCategory.delete({
+        where: {
+            id,
+        },
+    });
+}
 module.exports = {
     createCategory,
     getAllCategories,
+    getCategoryById,
+    updateCategory,
+    deleteCategory,
 };

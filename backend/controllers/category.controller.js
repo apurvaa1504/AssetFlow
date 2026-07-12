@@ -23,8 +23,55 @@ async function getCategories(req, res) {
         });
     }
 }
+async function getCategoryById(req, res) {
+    try {
+        const category = await categoryService.getCategoryById(req.params.id);
+
+        if (!category) {
+            return res.status(404).json({
+                message: "Category not found",
+            });
+        }
+
+        res.json(category);
+    } catch (err) {
+        res.status(500).json({
+            error: err.message,
+        });
+    }
+}
+async function updateCategory(req, res) {
+    try {
+        const category = await categoryService.updateCategory(
+            req.params.id,
+            req.body
+        );
+
+        res.json(category);
+    } catch (err) {
+        res.status(500).json({
+            error: err.message,
+        });
+    }
+}
+async function deleteCategory(req, res) {
+    try {
+        await categoryService.deleteCategory(req.params.id);
+
+        res.json({
+            message: "Category deleted successfully",
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: err.message,
+        });
+    }
+}
 
 module.exports = {
     createCategory,
     getCategories,
+    getCategoryById,
+    updateCategory,
+    deleteCategory,
 };
