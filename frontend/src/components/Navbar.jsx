@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 
 const LINKS = [
   { to: '/dashboard', label: 'Dashboard' },
+  { to: '/organization', label: 'Organization Setup' },
   { to: '/booking', label: 'Booking' },
   { to: '/maintenance', label: 'Maintenance' },
   { to: '/audit', label: 'Audit' },
@@ -26,7 +27,6 @@ export default function Navbar() {
         </span>
         <span className="font-display text-base font-semibold text-ink">AssetFlow</span>
       </div>
-
       <nav className="flex-1 space-y-1 px-3 py-4">
         {LINKS.map((link) => (
           <NavLink
@@ -42,7 +42,6 @@ export default function Navbar() {
           </NavLink>
         ))}
       </nav>
-
       <div className="border-t border-line px-3 py-4">
         {user && (
           <p className="mb-2 truncate px-3 text-xs text-muted">

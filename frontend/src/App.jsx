@@ -8,11 +8,11 @@ import Booking from './pages/Booking.jsx';
 import Maintenance from './pages/Maintenance.jsx';
 import Audit from './pages/Audit.jsx';
 import Reports from './pages/Reports.jsx';
+import OrganizationSetup from './pages/OrganizationSetup.jsx';
 
 function Layout() {
   const location = useLocation();
   const isLogin = location.pathname === '/login';
-
   return (
     <div className={isLogin ? '' : 'flex'}>
       {!isLogin && (
@@ -29,6 +29,14 @@ function Layout() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/organization"
+            element={
+              <ProtectedRoute>
+                <OrganizationSetup />
               </ProtectedRoute>
             }
           />
