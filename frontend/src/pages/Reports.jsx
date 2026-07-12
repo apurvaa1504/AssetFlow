@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
-  dummyMaintenanceFrequency,
-  dummyBookingHeatmap,
-  dummyDeptAllocationSummary,
-} from '../data/dummyData.js';
+  getMaintenanceFrequency,
+  getBookingHeatmap,
+  getDepartmentAllocationSummary,
+} from '../services/reportsService.js';
 
 function ChartCard({ title, children }) {
   return (
@@ -15,19 +16,38 @@ function ChartCard({ title, children }) {
 }
 
 export default function Reports() {
+  const [maintenanceFreq, setMaintenanceFreq] = useState([]);
+  const [bookingHeatmap, setBookingHeatmap] = useState([]);
+  const [deptAllocation, setDeptAllocation] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    Promise.all([getMaintenanceFrequency(), getBookingHeatmap(), getDepartmentAllocationSummary()])
+      .then(([maint, heat, dept]) => {
+        setMaintenanceFreq(maint);
+        setBookingHeatmap(heat);
+        setDeptAllocation(dept);
+      })
+      .catch((err) => setError(err.message));
+  }, []);
+
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-2xl font-semibold">Reports & Analytics</h1>
-        <p className="mt-1 text-sm text-muted">
-          Charts are wired to dummy data now — swap the arrays in reportsService.js for live queries later.
-        </p>
+        <h1 className="font-display text-2xl font-semibold">Reports &amp; Analytics</h1>
+        <p className="mt-1 text-sm text-muted">Live data from your database.</p>
       </div>
+
+      {error && (
+        <div className="rounded-md border border-danger/30 bg-danger-light px-3 py-2 text-sm text-danger">
+          {error}
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <ChartCard title="Maintenance Frequency by Category">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={dummyMaintenanceFrequency}>
+            <BarChart data={maintenanceFreq}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E4E7EC" />
               <XAxis dataKey="category" tick={{ fontSize: 12, fill: '#5B6478' }} />
               <YAxis tick={{ fontSize: 12, fill: '#5B6478' }} />
@@ -39,7 +59,7 @@ export default function Reports() {
 
         <ChartCard title="Booking Heatmap (Peak Usage Windows)">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={dummyBookingHeatmap}>
+            <BarChart data={bookingHeatmap}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E4E7EC" />
               <XAxis dataKey="hour" tick={{ fontSize: 12, fill: '#5B6478' }} />
               <YAxis tick={{ fontSize: 12, fill: '#5B6478' }} />
@@ -51,7 +71,7 @@ export default function Reports() {
 
         <ChartCard title="Department-wise Allocation Summary">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={dummyDeptAllocationSummary} layout="vertical">
+            <BarChart data={deptAllocation} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#E4E7EC" />
               <XAxis type="number" tick={{ fontSize: 12, fill: '#5B6478' }} />
               <YAxis dataKey="department" type="category" width={90} tick={{ fontSize: 12, fill: '#5B6478' }} />
@@ -65,7 +85,7 @@ export default function Reports() {
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted">Export</h2>
           <p className="text-sm text-muted">
             Utilization trends, assets due for maintenance/retirement, and exportable reports go here once
-            Member 2's asset lifecycle data is live.
+            asset lifecycle data is live.
           </p>
           <button className="mt-4 rounded-md border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-bg">
             Export as CSV

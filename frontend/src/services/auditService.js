@@ -1,33 +1,32 @@
-// Maps to: audit_cycles, audit_cycle_auditors, audit_items, audit_discrepancies
-// POST   /audit-cycle
-// GET    /audit-cycle
-// PATCH  /audit-item/:id
-// POST   /audit-cycle/:id/close
-// GET    /audit-cycle/:id/discrepancy-report (CSV/PDF export)
+import { apiFetch } from './api.js';
 
-// import axios from 'axios';
-// const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
+// GET /audit-cycles  (includes items)
 export async function getAuditCycles() {
-  return null;
+  return apiFetch('/audit-cycles');
 }
 
+// POST /audit-cycles
 export async function createAuditCycle(payload) {
-  return null;
+  return apiFetch('/audit-cycles', {
+    method: 'POST',
+    body: JSON.stringify({
+      name: payload.name,
+      scope_department: payload.scope_department,
+      start_date: payload.start_date,
+      end_date: payload.end_date,
+    }),
+  });
 }
 
-export async function setAuditItemStatus(itemId, status) {
-  // const res = await axios.patch(`${API_BASE}/audit-item/${itemId}`, { verification_status: status });
-  // return res.data;
-  return null;
+// PATCH /audit-items/:id
+export async function setAuditItemStatus(itemId, status, notes) {
+  return apiFetch(`/audit-items/${itemId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ verification_status: status, notes }),
+  });
 }
 
+// POST /audit-cycles/:id/close
 export async function closeAuditCycle(cycleId) {
-  // const res = await axios.post(`${API_BASE}/audit-cycle/${cycleId}/close`);
-  // return res.data;
-  return null;
-}
-
-export async function getDiscrepancyReport(cycleId) {
-  return null;
+  return apiFetch(`/audit-cycles/${cycleId}/close`, { method: 'POST' });
 }

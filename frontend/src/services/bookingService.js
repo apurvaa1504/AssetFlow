@@ -1,30 +1,30 @@
-// Maps to: bookings table (Screen 6)
-// GET    /bookings?asset_id=
-// POST   /bookings
-// PATCH  /bookings/:id/cancel
-//
-// Every function currently resolves to null/undefined so pages fall back
-// to dummy data (see src/data/dummyData.js). Once Member 2/1's API is live,
-// uncomment the axios calls — no page code needs to change, since pages
-// already treat a null response as "keep using local state."
+import { apiFetch } from './api.js';
 
-// import axios from 'axios';
-// const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
+// GET /bookings?asset_id=
 export async function getBookings(assetId) {
-  // const res = await axios.get(`${API_BASE}/bookings`, { params: { asset_id: assetId } });
-  // return res.data;
-  return null;
+  const qs = assetId ? `?asset_id=${assetId}` : '';
+  return apiFetch(`/bookings${qs}`);
 }
 
+// GET /bookings/assets — assets that can be booked
+export async function getBookableAssets() {
+  return apiFetch('/bookings/assets');
+}
+
+// POST /bookings
 export async function createBooking(booking) {
-  // const res = await axios.post(`${API_BASE}/bookings`, booking);
-  // return res.data;
-  return null;
+  return apiFetch('/bookings', {
+    method: 'POST',
+    body: JSON.stringify({
+      asset_id: booking.asset_id,
+      start_time: booking.start_time,
+      end_time: booking.end_time,
+      purpose: booking.purpose,
+    }),
+  });
 }
 
+// PATCH /bookings/:id/cancel
 export async function cancelBooking(bookingId) {
-  // const res = await axios.patch(`${API_BASE}/bookings/${bookingId}/cancel`);
-  // return res.data;
-  return null;
+  return apiFetch(`/bookings/${bookingId}/cancel`, { method: 'PATCH' });
 }

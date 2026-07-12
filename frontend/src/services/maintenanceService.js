@@ -1,38 +1,46 @@
-// Maps to: maintenance_requests table (Screen 7)
-// POST   /maintenance
-// GET    /maintenance
-// PATCH  /maintenance/:id/approve
-// PATCH  /maintenance/:id/reject
-// PATCH  /maintenance/:id/assign
-// PATCH  /maintenance/:id/resolve
+import { apiFetch } from './api.js';
 
-// import axios from 'axios';
-// const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
+// GET /maintenance
 export async function getMaintenanceRequests() {
-  return null;
+  return apiFetch('/maintenance');
 }
 
+// POST /maintenance
 export async function raiseMaintenanceRequest(payload) {
-  return null;
+  return apiFetch('/maintenance', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
 }
 
+// PATCH /maintenance/:id/approve
 export async function approveMaintenance(id, notes) {
-  // const res = await axios.patch(`${API_BASE}/maintenance/${id}/approve`, { notes });
-  // return res.data;
-  return null;
+  return apiFetch(`/maintenance/${id}/approve`, {
+    method: 'PATCH',
+    body: JSON.stringify({ notes }),
+  });
 }
 
+// PATCH /maintenance/:id/reject
 export async function rejectMaintenance(id, reason) {
-  // const res = await axios.patch(`${API_BASE}/maintenance/${id}/reject`, { reason });
-  // return res.data;
-  return null;
+  return apiFetch(`/maintenance/${id}/reject`, {
+    method: 'PATCH',
+    body: JSON.stringify({ reason }),
+  });
 }
 
+// PATCH /maintenance/:id/assign
 export async function assignTechnician(id, technician) {
-  return null;
+  return apiFetch(`/maintenance/${id}/assign`, {
+    method: 'PATCH',
+    body: JSON.stringify({ technician }),
+  });
 }
 
+// PATCH /maintenance/:id/resolve
 export async function resolveMaintenance(id, resolutionNotes) {
-  return null;
+  return apiFetch(`/maintenance/${id}/resolve`, {
+    method: 'PATCH',
+    body: JSON.stringify({ resolution_notes: resolutionNotes }),
+  });
 }
