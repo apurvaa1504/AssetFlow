@@ -6,6 +6,7 @@ const { PrismaPg } = require('@prisma/adapter-pg');
 
 const authRoutes = require('./routes/auth');
 const categoryRoutes = require('./routes/category.routes');
+const assetRoutes = require("./routes/asset.routes");
 const dashboardRoutes = require('./routes/dashboard.routes');
 const bookingRoutes = require('./routes/booking.routes');
 const maintenanceRoutes = require('./routes/maintenance.routes');
@@ -31,7 +32,6 @@ app.use('/maintenance', maintenanceRoutes);
 app.use('/audit-cycles', auditRoutes);
 app.use('/audit-items', auditItemRoutes);
 app.use('/reports', reportsRoutes);
-const assetRoutes = require("./routes/asset.routes");
 
 app.use("/assets", assetRoutes);
 
